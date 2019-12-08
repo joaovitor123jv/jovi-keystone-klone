@@ -17,6 +17,8 @@ class Camera
     Position position;
     Rotation rotation;
     int topIs;
+    GLfloat angle;
+    GLfloat aspect;
 
     // Defaults to TOP_IS_Y
     Camera()
@@ -25,6 +27,8 @@ class Camera
         this->position.x = 0;
         this->position.y = 0;
         this->position.z = 0;
+        this->angle = 45;
+        this->aspect = 0;
     }
 
     void look(void)
@@ -53,5 +57,10 @@ class Camera
                 0, 1, 0);
             break;
         }
+    }
+
+    void updateAspect(GLfloat width, GLfloat height)
+    {
+        this->aspect = width / height;
     }
 };

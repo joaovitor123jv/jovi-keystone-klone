@@ -6,14 +6,16 @@
 #include "snowman.h"
 #include "sun.h"
 #include "scenario.h"
+#include "observer.h"
 
 // Variáveis para controles de navegação
-GLfloat angle, fAspect;
-GLfloat rotX, rotY, rotX_ini, rotY_ini;
+GLfloat angle;
+// GLfloat rotX, rotY, rotX_ini, rotY_ini;
 GLfloat obsX, obsY, obsZ, obsX_ini, obsY_ini, obsZ_ini;
 int x_ini, y_ini, bot;
 
 Camera camera;
+Observer observer;
 Snowman snowman;
 Sun sun;
 
@@ -67,26 +69,22 @@ void displayCallback(void)
 // Função usada para especificar o volume de visualização
 void EspecificaParametrosVisualizacao(void)
 {
-    // Especifica sistema de coordenadas de projeção
-    glMatrixMode(GL_PROJECTION);
-    // Inicializa sistema de coordenadas de projeção
-    glLoadIdentity();
+    glMatrixMode(GL_PROJECTION); // Especifica sistema de coordenadas de projeção
+    glLoadIdentity(); // Inicializa sistema de coordenadas de projeção
 
     // Especifica a projeção perspectiva
     // (angulo, aspecto, zMin, zMax)
-    gluPerspective(angle, fAspect, 0.5, 1000);
+    gluPerspective(camera.angle, camera.aspect, 0.5, 1000);
 
     setIlumination();
 
     // Posiciona e orienta o observador
-    glTranslatef(-obsX, -obsY, -obsZ);
-    glRotatef(rotX, 1, 0, 0);
-    glRotatef(rotY, 0, 1, 0);
+    glTranslatef(-observer.position.x, -observer.position.y, -observer.position.z);
+    glRotatef(observer.rotation.x, 1, 0, 0);
+    glRotatef(observer.rotation.y, 0, 1, 0);
 
-    // Especifica sistema de coordenadas do modelo
-    glMatrixMode(GL_MODELVIEW);
-    // Inicializa sistema de coordenadas do modelo
-    glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW); // Especifica sistema de coordenadas do modelo
+    glLoadIdentity(); // Inicializa sistema de coordenadas do modelo
 
     camera.look();
 
@@ -101,21 +99,27 @@ void keyboardCallback(unsigned char tecla, int x, int y)
     case 27:
         exit(0);
         break;
+
     case 'a':
         camera.position.x++;
         break;
+
     case 'z':
         camera.position.y--;
         break;
+
     case 's':
         camera.position.y++;
         break;
+
     case 'x':
         camera.position.y--;
         break;
+
     case 'd':
         camera.position.z++;
         break;
+
     case 'c':
         camera.position.z--;
         break;
@@ -131,31 +135,39 @@ void specialCallback(int tecla, int x, int y)
     switch (tecla)
     {
     case GLUT_KEY_HOME:
-        if (angle >= 10)
-            angle -= 5;
+        if (camera.angle >= 10)
+            camera.angle -= 5;
         break;
+
     case GLUT_KEY_END:
-        if (angle <= 150)
-            angle += 5;
+        if (camera.angle <= 150)
+            camera.angle += 5;
         break;
+
     case GLUT_KEY_F10:
         snowman.toggleRotation();
         break;
+
     case GLUT_KEY_UP:
         snowman.position.y += 2;
         break;
+
     case GLUT_KEY_DOWN:
         snowman.position.y -= 2;
         break;
+
     case GLUT_KEY_LEFT:
         snowman.position.x -= 2;
         break;
+
     case GLUT_KEY_RIGHT:
         snowman.position.x += 2;
         break;
+
     case GLUT_KEY_F3:
         snowman.position.z += 2;
         break;
+
     case GLUT_KEY_F4:
         snowman.position.z -= 2;
         break;
@@ -172,11 +184,7 @@ void mouseCallback(int button, int state, int x, int y)
         // Salva os parâmetros atuais
         x_ini = x;
         y_ini = y;
-        obsX_ini = obsX;
-        obsY_ini = obsY;
-        obsZ_ini = obsZ;
-        rotX_ini = rotX;
-        rotY_ini = rotY;
+        observer.rememberValues();
         bot = button;
     }
     else
@@ -195,17 +203,16 @@ void motionCallback(int x, int y)
         // Calcula diferenças
         int deltax = x_ini - x;
         int deltay = y_ini - y;
+
         // E modifica ângulos
-        rotY = rotY_ini - deltax / SENS_ROT;
-        rotX = rotX_ini - deltay / SENS_ROT;
+        observer.rotation.x = observer.initialRotation.x - deltay / SENS_ROT;
+        observer.rotation.y = observer.initialRotation.y - deltax / SENS_ROT;
     }
     // Botão direito ?
     else if (bot == GLUT_RIGHT_BUTTON)
     {
-        // Calcula diferença
-        int deltaz = y_ini - y;
-        // E modifica distância do observador
-        obsZ = obsZ_ini + deltaz / SENS_OBS;
+        int deltaz = y_ini - y; // Calcula diferença
+        observer.position.z = observer.initialPosition.z + deltaz / SENS_OBS; // E modifica distância do observador
     }
     // Botão do meio ?
     else if (bot == GLUT_MIDDLE_BUTTON)
@@ -213,9 +220,10 @@ void motionCallback(int x, int y)
         // Calcula diferenças
         int deltax = x_ini - x;
         int deltay = y_ini - y;
+
         // E modifica posições
-        obsX = obsX_ini + deltax / SENS_TRANSL;
-        obsY = obsY_ini - deltay / SENS_TRANSL;
+        observer.position.x = observer.initialPosition.x + deltax / SENS_TRANSL;
+        observer.position.y = observer.initialPosition.y - deltay / SENS_TRANSL;
     }
     EspecificaParametrosVisualizacao();
     glutPostRedisplay();
@@ -232,17 +240,16 @@ void Anima(int value)
 }
 
 // Função callback chamada quando o tamanho da janela é alterado
-void reshapeCallback(GLsizei w, GLsizei h)
+void reshapeCallback(GLsizei width, GLsizei height)
 {
     // Para previnir uma divisão por zero
-    if (h == 0)
-        h = 1;
+    if (height == 0)
+        height = 1;
 
-    // Especifica as dimensões da viewport
-    glViewport(0, 0, w, h);
+    glViewport(0, 0, width, height); // Especifica as dimensões da viewport
+    // fAspect = (GLfloat)width / (GLfloat)height; 
 
-    // Calcula a correção de aspecto
-    fAspect = (GLfloat)w / (GLfloat)h;
+    camera.updateAspect(width, height); // Calcula a correção de aspecto
 
     EspecificaParametrosVisualizacao();
 }
@@ -251,79 +258,36 @@ void reshapeCallback(GLsizei w, GLsizei h)
 void setup(void)
 {
     /* ---------- CALLBACKS ---------------- */
-    // Registra a função callback de redesenho da janela de visualização
-    glutDisplayFunc(displayCallback);
-
-    // Registra a função callback de redimensionamento da janela de visualização
-    glutReshapeFunc(reshapeCallback);
-
-    // Registra a função callback para tratamento das teclas normais
-    glutKeyboardFunc(keyboardCallback);
-
-    // Registra a função callback para tratamento das teclas especiais
-    glutSpecialFunc(specialCallback);
-
-    // Registra a função callback para eventos de botões do mouse
-    glutMouseFunc(mouseCallback);
-
-    // Registra a função callback para eventos de movimento do mouse
-    glutMotionFunc(motionCallback);
-
+    glutDisplayFunc(displayCallback); // Registra a função callback de redesenho da janela de visualização
+    glutReshapeFunc(reshapeCallback); // Registra a função callback de redimensionamento da janela de visualização
+    glutKeyboardFunc(keyboardCallback); // Registra a função callback para tratamento das teclas normais
+    glutSpecialFunc(specialCallback); // Registra a função callback para tratamento das teclas especiais
+    glutMouseFunc(mouseCallback); // Registra a função callback para eventos de botões do mouse
+    glutMotionFunc(motionCallback); // Registra a função callback para eventos de movimento do mouse
 
     /* --------------- OpenGL rendering Options --------------------- */
     // Define a cor de fundo da janela de visualização como branca
     glClearColor(0.4f, 0.0f, 1.0f, 1.0f);
 
-    // Habilita a definição da cor do material a partir da cor corrente
-    glEnable(GL_COLOR_MATERIAL);
-    //Habilita o uso de iluminação
-    glEnable(GL_LIGHTING);
-    // Habilita a luz de número 0
-    glEnable(GL_LIGHT0);
-    // Habilita o depth-buffering
-    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_COLOR_MATERIAL); // Habilita a definição da cor do material a partir da cor corrente
+    glEnable(GL_LIGHTING); //Habilita o uso de iluminação
+    glEnable(GL_LIGHT0); // Habilita a luz de número 0
+    glEnable(GL_DEPTH_TEST); // Habilita o depth-buffering
 
     // Habilita o modelo de colorização de Gouraud
     glShadeModel(GL_SMOOTH);
-
-
-    /* ------------ Variables start ----------- */
-
-    // Inicializa a variável que especifica o ângulo da projeção
-    // perspectiva
-    angle = 45;
-
-    // Inicializa as variáveis usadas para alterar a posição do
-    // observador virtual
-    rotX = 0;
-    rotY = 0;
-    obsX = obsY = 0;
-    obsZ = 150;
 }
 
 // Programa Principal
 int main(int argc, char **argv)
 {
     glutInit(&argc, argv);
-    // Define do modo de operação da GLUT
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-
-    // Especifica a posição inicial da janela GLUT
-    glutInitWindowPosition(5, 5);
-
-    // Especifica o tamanho inicial em pixels da janela GLUT
-    glutInitWindowSize(800, 600);
-
-    // Cria a janela passando como argumento o título da mesma
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH); // Define do modo de operação da GLUT
+    glutInitWindowPosition(100, 50); // Especifica a posição inicial da janela GLUT
+    glutInitWindowSize(800, 600); // Especifica o tamanho inicial em pixels da janela GLUT
     glutCreateWindow("Jovi - Keystone Kapers");
-
-    // Chama a função responsável por fazer as inicializações
-    setup();
-
+    setup(); // Chama a função responsável por fazer as inicializações
     glutTimerFunc(60, Anima, 1);
-
-    // Inicia o processamento e aguarda interações do usuário
-    glutMainLoop();
-
+    glutMainLoop(); // Inicia o processamento e aguarda interações do usuário
     return 0;
 }
