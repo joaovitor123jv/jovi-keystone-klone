@@ -8,4 +8,6 @@ typedef struct
     int z;
 } Position;
 
+typedef Position Rotation;
+
 #endif // GENERAL_STRUCTURES

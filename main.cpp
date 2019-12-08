@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "camera.h"
 #include "snowman.h"
 #include "sun.h"
 #include "scenario.h"
@@ -10,22 +11,23 @@
 GLfloat angle, fAspect;
 GLfloat rotX, rotY, rotX_ini, rotY_ini;
 GLfloat obsX, obsY, obsZ, obsX_ini, obsY_ini, obsZ_ini;
-int x_ini, y_ini, bot, dx, dy, dz;
+int x_ini, y_ini, bot;
 
+Camera camera;
 Snowman snowman;
 Sun sun;
 
 // Função responsável pela especificação dos parâmetros de iluminação
 void setIlumination(void)
 {
-    GLfloat luzAmbiente[4] = {0.2, 0.2, 0.2, 1.0};
-    GLfloat luzDifusa[4] = {0.8, 0.8, 0.8, 1.0};    // "cor"
-    GLfloat luzEspecular[4] = {1.0, 1.0, 1.0, 1.0}; // "brilho"
-    GLfloat posicaoLuz[4] = {-70.0, 75.0, 90.0, 1.0};
+    static const GLfloat luzAmbiente[4] = {0.2, 0.2, 0.2, 1.0};
+    static const GLfloat luzDifusa[4] = {0.8, 0.8, 0.8, 1.0};    // "cor"
+    static const GLfloat luzEspecular[4] = {1.0, 1.0, 1.0, 1.0}; // "brilho"
+    static const GLfloat posicaoLuz[4] = {-70.0, 75.0, 90.0, 1.0};
 
     // Capacidade de brilho do material
-    GLfloat especularidade[4] = {1.0, 1.0, 1.0, 1.0};
-    GLint especMaterial = 60;
+    static const GLfloat especularidade[4] = {1.0, 1.0, 1.0, 1.0};
+    static const GLint especMaterial = 60;
 
     // Define a refletância do material
     glMaterialfv(GL_FRONT, GL_SPECULAR, especularidade);
@@ -75,6 +77,7 @@ void EspecificaParametrosVisualizacao(void)
     gluPerspective(angle, fAspect, 0.5, 1000);
 
     setIlumination();
+
     // Posiciona e orienta o observador
     glTranslatef(-obsX, -obsY, -obsZ);
     glRotatef(rotX, 1, 0, 0);
@@ -85,7 +88,7 @@ void EspecificaParametrosVisualizacao(void)
     // Inicializa sistema de coordenadas do modelo
     glLoadIdentity();
 
-    gluLookAt(0 + dx, 0 + dy, 50 + dx, 0 + dx, 10 + dy, 0 + dz, 0, 1, 0);
+    camera.look();
 
     glutPostRedisplay();
 }
@@ -99,22 +102,22 @@ void keyboardCallback(unsigned char tecla, int x, int y)
         exit(0);
         break;
     case 'a':
-        dx++;
+        camera.position.x++;
         break;
     case 'z':
-        dx--;
+        camera.position.y--;
         break;
     case 's':
-        dy++;
+        camera.position.y++;
         break;
     case 'x':
-        dy--;
+        camera.position.y--;
         break;
     case 'd':
-        dz++;
+        camera.position.z++;
         break;
     case 'c':
-        dz--;
+        camera.position.z--;
         break;
     }
 
@@ -296,10 +299,6 @@ void setup(void)
     rotY = 0;
     obsX = obsY = 0;
     obsZ = 150;
-
-    dx = 0;
-    dy = 0;
-    dz = 0;
 }
 
 // Programa Principal
