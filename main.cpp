@@ -3,15 +3,17 @@
 #include <stdlib.h>
 
 #include "snowman.h"
+#include "sun.h"
 #include "scenario.h"
 
 // Variáveis para controles de navegação
-GLfloat angle, fAspect, angsol;
+GLfloat angle, fAspect;
 GLfloat rotX, rotY, rotX_ini, rotY_ini;
 GLfloat obsX, obsY, obsZ, obsX_ini, obsY_ini, obsZ_ini;
 int x_ini, y_ini, bot, dx, dy, dz;
 
 Snowman snowman;
+Sun sun;
 
 // Função responsável pela especificação dos parâmetros de iluminação
 void setIlumination(void)
@@ -51,13 +53,7 @@ void displayCallback(void)
     setIlumination();
 
     snowman.draw();
-
-    glPushMatrix();
-        glColor3f(1.0, 1.0, 0.0);
-        glTranslatef(-70.0, 80.0, -100.0);
-        glRotatef(angsol, 0, 0, 1);
-        glutSolidSphere(15, 15, 10);
-    glPopMatrix();
+    sun.draw();
 
     drawScenario();
 
@@ -66,7 +62,6 @@ void displayCallback(void)
 }
 
 // Função usada para especificar a posição do observador virtual
-
 // Função usada para especificar o volume de visualização
 void EspecificaParametrosVisualizacao(void)
 {
@@ -226,11 +221,7 @@ void motionCallback(int x, int y)
 // Função callback chamada pela GLUT a cada intervalo de tempo
 void Anima(int value)
 {
-    // Muda o angulo de rotação, e se chegar a 360, passa para zero
-    if (++angsol > 360.0f)
-        angsol = 0.0f;
-
-    angsol += 10;
+    sun.animate();
     snowman.animate();
 
     glutPostRedisplay();
@@ -256,6 +247,27 @@ void reshapeCallback(GLsizei w, GLsizei h)
 // Função responsável por inicializar parâmetros e variáveis
 void setup(void)
 {
+    /* ---------- CALLBACKS ---------------- */
+    // Registra a função callback de redesenho da janela de visualização
+    glutDisplayFunc(displayCallback);
+
+    // Registra a função callback de redimensionamento da janela de visualização
+    glutReshapeFunc(reshapeCallback);
+
+    // Registra a função callback para tratamento das teclas normais
+    glutKeyboardFunc(keyboardCallback);
+
+    // Registra a função callback para tratamento das teclas especiais
+    glutSpecialFunc(specialCallback);
+
+    // Registra a função callback para eventos de botões do mouse
+    glutMouseFunc(mouseCallback);
+
+    // Registra a função callback para eventos de movimento do mouse
+    glutMotionFunc(motionCallback);
+
+
+    /* --------------- OpenGL rendering Options --------------------- */
     // Define a cor de fundo da janela de visualização como branca
     glClearColor(0.4f, 0.0f, 1.0f, 1.0f);
 
@@ -270,6 +282,9 @@ void setup(void)
 
     // Habilita o modelo de colorização de Gouraud
     glShadeModel(GL_SMOOTH);
+
+
+    /* ------------ Variables start ----------- */
 
     // Inicializa a variável que especifica o ângulo da projeção
     // perspectiva
@@ -301,25 +316,7 @@ int main(int argc, char **argv)
     glutInitWindowSize(800, 600);
 
     // Cria a janela passando como argumento o título da mesma
-    glutCreateWindow("Cubo RGB");
-
-    // Registra a função callback de redesenho da janela de visualização
-    glutDisplayFunc(displayCallback);
-
-    // Registra a função callback de redimensionamento da janela de visualização
-    glutReshapeFunc(reshapeCallback);
-
-    // Registra a função callback para tratamento das teclas normais
-    glutKeyboardFunc(keyboardCallback);
-
-    // Registra a função callback para tratamento das teclas especiais
-    glutSpecialFunc(specialCallback);
-
-    // Registra a função callback para eventos de botões do mouse
-    glutMouseFunc(mouseCallback);
-
-    // Registra a função callback para eventos de movimento do mouse
-    glutMotionFunc(motionCallback);
+    glutCreateWindow("Jovi - Keystone Kapers");
 
     // Chama a função responsável por fazer as inicializações
     setup();
