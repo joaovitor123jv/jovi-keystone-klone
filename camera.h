@@ -29,7 +29,7 @@ class Camera
         this->topIs = CAMERA::TOP_IS_Y;
         this->position.x = 0;
         this->position.y = 0;
-        this->position.z = 0;
+        this->position.z = 10;
         this->angle = 45;
         this->aspect = 0;
     }
@@ -40,23 +40,23 @@ class Camera
         {
         case CAMERA::TOP_IS_X:
             gluLookAt(
-                0 + this->position.x, 0 + this->position.y, 50 + this->position.x,
-                0 + this->position.x, 10 + this->position.y, 0 + this->position.z,
+                this->position.x, this->position.y, this->position.x,
+                this->position.x, this->position.y, this->position.z,
                 1, 0, 0);
             break;
         
         case CAMERA::TOP_IS_Z:
             gluLookAt(
-                0 + this->position.x, 0 + this->position.y, 50 + this->position.x,
-                0 + this->position.x, 10 + this->position.y, 0 + this->position.z,
+                this->position.x, this->position.y, this->position.x,
+                this->position.x, this->position.y, this->position.z,
                 0, 0, 1);
             break;
 
         case CAMERA::TOP_IS_Y:
         default:
             gluLookAt(
-                0 + this->position.x, 0 + this->position.y, 50 + this->position.x,
-                0 + this->position.x, 10 + this->position.y, 0 + this->position.z,
+                this->position.x, this->position.y, this->position.x,
+                this->position.x, this->position.y, this->position.z,
                 0, 1, 0);
             break;
         }

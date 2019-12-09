@@ -57,12 +57,12 @@ class ControlsManager
         else if (button == GLUT_MIDDLE_BUTTON)
         {
             // E modifica posições
-            observer->position.x = observer->initialPosition.x + deltaX / translationSensibility;
+            observer->position.x = observer->initialPosition.x - deltaX / translationSensibility;
             observer->position.y = observer->initialPosition.y - deltaY / translationSensibility;
         }
     }
 
-    void onKeyEvent(unsigned char key, int x, int y)
+    void onKeyDownEvent(unsigned char key, int x, int y)
     {
         switch (key)
         {
@@ -70,33 +70,35 @@ class ControlsManager
             exit(0);
             break;
 
-        case 'a':
-            camera->position.x++;
-            break;
+        // case 'a':
+        //     camera->position.x++;
+        //     break;
 
-        case 'z':
-            camera->position.y--;
-            break;
+        // case 'z':
+        //     camera->position.y--;
+        //     break;
 
-        case 's':
-            camera->position.y++;
-            break;
+        // case 's':
+        //     camera->position.y++;
+        //     break;
 
-        case 'x':
-            camera->position.y--;
-            break;
+        // case 'x':
+        //     camera->position.y--;
+        //     break;
 
-        case 'd':
-            camera->position.z++;
-            break;
+        // case 'd':
+        //     camera->position.z++;
+        //     break;
 
-        case 'c':
-            camera->position.z--;
-            break;
+        // case 'c':
+        //     camera->position.z--;
+        //     break;
         }
     }
 
-    void onSpecialKeyEvent(int keyCode, int x, int y)
+    void onKeyUpEvent(unsigned char key, int x, int y) {}
+
+    void onSpecialKeyDownEvent(int keyCode, int x, int y)
     {
         switch (keyCode)
         {
@@ -115,19 +117,21 @@ class ControlsManager
             break;
 
         case GLUT_KEY_UP:
-            snowman->position.y += 2;
+            snowman->jump();
             break;
 
-        case GLUT_KEY_DOWN:
-            snowman->position.y -= 2;
-            break;
+        // case GLUT_KEY_DOWN:
+        //     snowman->position.y -= 2;
+        //     break;
 
         case GLUT_KEY_LEFT:
-            snowman->position.x -= 2;
+            snowman->turnLeft();
+            snowman->walk();
             break;
 
         case GLUT_KEY_RIGHT:
-            snowman->position.x += 2;
+            snowman->turnRight();
+            snowman->walk();
             break;
 
         case GLUT_KEY_F3:
@@ -136,6 +140,20 @@ class ControlsManager
 
         case GLUT_KEY_F4:
             snowman->position.z -= 2;
+            break;
+        }
+    }
+
+    void onSpecialKeyUpEvent(int keyCode, int x, int y)
+    {
+        switch (keyCode)
+        {
+        case GLUT_KEY_LEFT:
+            snowman->stop();
+            break;
+
+        case GLUT_KEY_RIGHT:
+            snowman->stop();
             break;
         }
     }

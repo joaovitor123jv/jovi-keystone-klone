@@ -8,12 +8,14 @@
 #include "scenario.h"
 #include "observer.h"
 #include "controls-manager.h"
+#include "scenario.h"
 
 Camera camera;
 Observer observer;
 Snowman snowman;
 Sun sun;
 ControlsManager controlManager;
+Scenario scenario;
 
 // Função responsável pela especificação dos parâmetros de iluminação
 void setIlumination(void)
@@ -53,12 +55,10 @@ void displayCallback(void)
     setIlumination();
 
     snowman.draw();
-    sun.draw();
+    // sun.draw();
+    scenario.draw();
 
-    drawScenario();
-
-    // Executa os comandos OpenGL
-    glutSwapBuffers();
+    glutSwapBuffers(); // Executa os comandos OpenGL
 }
 
 // Função usada para especificar a posição do observador virtual
@@ -75,7 +75,7 @@ void EspecificaParametrosVisualizacao(void)
     setIlumination();
 
     // Posiciona e orienta o observador
-    glTranslatef(-observer.position.x, -observer.position.y, -observer.position.z);
+    glTranslatef(observer.position.x, -observer.position.y, -observer.position.z);
     glRotatef(observer.rotation.x, 1, 0, 0);
     glRotatef(observer.rotation.y, 0, 1, 0);
 
@@ -90,7 +90,15 @@ void EspecificaParametrosVisualizacao(void)
 // Função callback chamada para gerenciar eventos de teclas normais (ESC)
 void keyboardCallback(unsigned char tecla, int x, int y)
 {
-    controlManager.onKeyEvent(tecla, x, y);
+    controlManager.onKeyDownEvent(tecla, x, y);
+    EspecificaParametrosVisualizacao();
+    glutPostRedisplay();
+}
+
+// Função callback chamada para gerenciar eventos de teclas normais (ESC)
+void keyboardUpCallback(unsigned char tecla, int x, int y)
+{
+    controlManager.onKeyUpEvent(tecla, x, y);
     EspecificaParametrosVisualizacao();
     glutPostRedisplay();
 }
@@ -98,7 +106,15 @@ void keyboardCallback(unsigned char tecla, int x, int y)
 // Função callback para tratar eventos de teclas especiais
 void specialCallback(int tecla, int x, int y)
 {
-    controlManager.onSpecialKeyEvent(tecla, x, y);
+    controlManager.onSpecialKeyDownEvent(tecla, x, y);
+    EspecificaParametrosVisualizacao();
+    glutPostRedisplay();
+}
+
+// Função callback para tratar eventos de teclas especiais
+void specialUpCallback(int tecla, int x, int y)
+{
+    controlManager.onSpecialKeyUpEvent(tecla, x, y);
     EspecificaParametrosVisualizacao();
     glutPostRedisplay();
 }
@@ -125,7 +141,7 @@ void Anima(int value)
     snowman.animate();
 
     glutPostRedisplay();
-    glutTimerFunc(60, Anima, 1);
+    glutTimerFunc(34, Anima, 1);
 }
 
 // Função callback chamada quando o tamanho da janela é alterado
@@ -147,7 +163,9 @@ void setup(void)
     glutDisplayFunc(displayCallback); // Registra a função callback de redesenho da janela de visualização
     glutReshapeFunc(reshapeCallback); // Registra a função callback de redimensionamento da janela de visualização
     glutKeyboardFunc(keyboardCallback); // Registra a função callback para tratamento das teclas normais
+    glutKeyboardUpFunc(keyboardUpCallback);
     glutSpecialFunc(specialCallback); // Registra a função callback para tratamento das teclas especiais
+    glutSpecialUpFunc(specialUpCallback);
     glutMouseFunc(mouseCallback); // Registra a função callback para eventos de botões do mouse
     glutMotionFunc(motionCallback); // Registra a função callback para eventos de movimento do mouse
 

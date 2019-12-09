@@ -2,30 +2,45 @@
 #define SNOWMAN
 
 #include<GL/freeglut.h>
+#include<stdio.h>
 #include "general-structures.h"
+
+#define SNOWMAN_JUMP_FORCE 5
+#define SNOWMAN_WALK_SPEED 3
 
 class Snowman
 {
     public:
-    Position position;
-    GLfloat rotation;
+    float ySpeed;
+    float gravity;
+
+    bool jumping;
     bool rotationEnabled;
+
+    Position position;
+    Position initialPosition;
+    GLfloat rotation;
 
     //Default constructor
     Snowman()
     {
-        this->rotation = 0;
+        this->rotation = 90;
         this->position.x = 0;
         this->position.y = 0;
         this->position.z = 0;
+        this->initialPosition.x = 0;
+        this->initialPosition.y = 0;
+        this->initialPosition.z = 0;
         this->rotationEnabled = false;
+        this->ySpeed = 0.0;
+        this->gravity = 0.98;
     }
 
     // Print the snowman
     void draw()
     {
         glPushMatrix();
-            glTranslatef(10 + this->position.x, -18 + this->position.y, 0.0 + this->position.z);
+            glTranslatef(this->position.x, this->position.y + 29, this->position.z);
             glRotatef(this->rotation, 0, 1, 0);
             this->snowman();
         glPopMatrix();
@@ -36,15 +51,93 @@ class Snowman
         this->rotationEnabled = ! this->rotationEnabled;
     }
 
+    void turnLeft()
+    {
+        this->rotation = -90;
+    }
+
+    void turnRight()
+    {
+        this->rotation = 90;
+    }
+
     void animate()
     {
-        if(this->rotationEnabled)
+        if(rotationEnabled)
         {
-            this->rotation += 5;
+            rotation += 5;
+        }
+        if(jumping)
+        {
+            jumpAnimation();
+        }
+        if(walking)
+        {
+            walkAnimation();
+        }
+    }
+
+    void walk()
+    {
+        walking = true;
+    }
+
+    void stop()
+    {
+        walking = false;
+    }
+
+    void walkAnimation()
+    {
+        if(this->rotation == -90)
+        {
+            this->position.x -= SNOWMAN_WALK_SPEED;
+        }
+        else
+        {
+            this->position.x += SNOWMAN_WALK_SPEED;
+        }
+    }
+
+    void jump()
+    {
+        if(!this->jumping)
+        {
+            printf("Starting JUMP!\n");
+            this->jumping = true;
+            this->createBackupPosition();
+            this->ySpeed = SNOWMAN_JUMP_FORCE;
+        }
+    }
+
+    void jumpAnimation()
+    {
+        printf("On JUMP ANIMATION\n");
+        if((this->position.y + this->ySpeed) < this->initialPosition.y)
+        {
+            printf("On IS NOT JUMPING\n");
+            this->ySpeed = 0;
+            this->position.y = this->initialPosition.y;
+            this->jumping = false;
+        }
+        else
+        {
+            printf("On IS JUMPING\n");
+            this->position.y += (int)this->ySpeed;
+            this->ySpeed -= this->gravity;
         }
     }
 
     private:
+    bool walking;
+
+    void createBackupPosition()
+    {
+        this->initialPosition.x = this->position.x;
+        this->initialPosition.y = this->position.y;
+        this->initialPosition.z = this->position.z;
+    }
+
     void snowman(void)
     {
         //cabeça
