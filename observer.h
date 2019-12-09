@@ -1,3 +1,6 @@
+#ifndef OBSERVER
+#define OBSERVER
+
 #include <GL/freeglut.h>
 #include "general-structures.h"
 
@@ -39,3 +42,5 @@ class Observer
 
     private:
 };
+
+#endif // OBSERVER

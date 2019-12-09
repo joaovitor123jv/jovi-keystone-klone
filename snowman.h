@@ -1,3 +1,6 @@
+#ifndef SNOWMAN
+#define SNOWMAN
+
 #include<GL/freeglut.h>
 #include "general-structures.h"
 
@@ -113,3 +116,5 @@ class Snowman
         glPopMatrix();
     }
 };
+
+#endif // SNOWMAN

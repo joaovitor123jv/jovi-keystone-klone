@@ -1,3 +1,6 @@
+#ifndef CAMERA
+#define CAMERA
+
 #include <GL/freeglut.h>
 #include "general-structures.h"
 
@@ -64,3 +67,5 @@ class Camera
         this->aspect = width / height;
     }
 };
+
+#endif // CAMERA
