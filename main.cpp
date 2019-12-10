@@ -169,6 +169,8 @@ void setup(void)
     /* ---------- CALLBACKS ---------------- */
     glutDisplayFunc(displayCallback); // Registra a função callback de redesenho da janela de visualização
     glutReshapeFunc(reshapeCallback); // Registra a função callback de redimensionamento da janela de visualização
+
+    glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
     glutKeyboardFunc(keyboardCallback); // Registra a função callback para tratamento das teclas normais
     glutKeyboardUpFunc(keyboardUpCallback);
     glutSpecialFunc(specialCallback); // Registra a função callback para tratamento das teclas especiais

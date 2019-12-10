@@ -10,4 +10,9 @@ typedef struct
 
 typedef Position Rotation;
 
+namespace DIRECTION
+{
+    enum { LEFT, RIGHT };
+}
+
 #endif // GENERAL_STRUCTURES

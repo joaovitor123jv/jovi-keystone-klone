@@ -24,7 +24,7 @@ class Observer
         this->initialRotation.z = 0;
 
         this->position.x = 0;
-        this->position.y = 55;
+        this->position.y = 100;
         this->position.z = 350;
         this->initialPosition.x = 0;
         this->initialPosition.y = 0;

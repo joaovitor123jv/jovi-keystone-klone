@@ -9,7 +9,7 @@ int STAIR_ID;
 
 class Stair
 {
-    public:
+public:
     Position position;
     int floorNumber;
     float animationStep;
@@ -25,9 +25,11 @@ class Stair
         floorNumber = 0;
         id = STAIR_ID++;
         isCarryingSomething = false;
+        tolerableDistance = 20;
+        this->direction = DIRECTION::RIGHT;
     }
 
-    Stair(int floorNumber, int xPosition)
+    Stair(int floorNumber, int xPosition, int direction)
     {
         floorHeight = 55;
         amountOfSteps = 10;
@@ -39,6 +41,8 @@ class Stair
         animationStep = 0;
         id = STAIR_ID++;
         isCarryingSomething = false;
+        tolerableDistance = 20;
+        this->direction = direction;
     }
 
     void draw(void)
@@ -48,12 +52,12 @@ class Stair
 
     void animate(Snowman *snowman)
     {
-        if(isCarryingSomething)
+        if (isCarryingSomething)
         {
-            snowman->stairUp(1);
+            stairUp(snowman, 1);
         }
 
-        if(animationStep > (floorHeight / amountOfSteps))
+        if (animationStep > (floorHeight / amountOfSteps))
         {
             animationStep = 0.6;
         }
@@ -67,7 +71,7 @@ class Stair
     {
         if (snowman->canMove)
         {
-            if(snowman->requestingAction)
+            if (snowman->requestingAction)
             {
                 if (isPlayerHere(snowman))
                 {
@@ -79,36 +83,53 @@ class Stair
         }
         else if (snowman->isOnStair(this->id))
         {
-            if(endedTravel(snowman))
+            if (endedTravel(snowman))
             {
                 this->isCarryingSomething = false;
                 snowman->enableMovements(this->id);
-                snowman->setFloorNumber(this->floorNumber+1, this->floorHeight);
+                snowman->setFloorNumber(this->floorNumber + 1, this->floorHeight);
             }
         }
     }
 
-    private:
+private:
     int id;
     int floorHeight;
     int amountOfSteps;
+    int tolerableDistance;
+    int direction;
     bool isCarryingSomething;
 
     void drawStairSteps(void)
     {
         float stepSize = floorHeight / amountOfSteps;
-
         glColor3f(1.0, 1.0, 1.0);
         glPushMatrix();
-            glTranslatef(position.x + animationStep, position.y - 2 + animationStep, position.z);
-            glScalef(1, 1, 4.2);
-            for(float counter = 0; counter < floorHeight; counter += stepSize)
+        glTranslatef(
+            position.x + ((direction == DIRECTION::RIGHT) ? animationStep : -animationStep),
+            position.y - 2 + animationStep,
+            position.z);
+        glScalef(1, 1, 4.2);
+        if (this->direction == DIRECTION::RIGHT)
+        {
+            for (float counter = 0; counter < floorHeight; counter += stepSize)
             {
                 glPushMatrix();
-                    glTranslatef(counter, counter, 0);
-                    glutSolidCube(stepSize);
+                glTranslatef(counter, counter, 0);
+                glutSolidCube(stepSize);
                 glPopMatrix();
             }
+        }
+        else
+        {
+            for (float counter = 0; counter < floorHeight; counter += stepSize)
+            {
+                glPushMatrix();
+                glTranslatef(-counter, counter, 0);
+                glutSolidCube(stepSize);
+                glPopMatrix();
+            }
+        }
         glPopMatrix();
     }
 
@@ -116,11 +137,24 @@ class Stair
     {
         if (this->floorNumber == snowman->floorNumber) // Compares position X
         {
-            if (snowman->position.x >= this->position.x)
+            if (this->direction == DIRECTION::RIGHT)
             {
-                if (snowman->position.x <= this->position.x + 5)
+                if (snowman->position.x >= this->position.x)
                 {
-                    return true;
+                    if (snowman->position.x <= this->position.x + this->tolerableDistance)
+                    {
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                if (snowman->position.x <= this->position.x)
+                {
+                    if (snowman->position.x >= this->position.x - this->tolerableDistance)
+                    {
+                        return true;
+                    }
                 }
             }
         }
@@ -130,6 +164,12 @@ class Stair
     bool endedTravel(Snowman *snowman)
     {
         return (snowman->position.y >= (this->floorNumber + 1) * this->floorHeight);
+    }
+
+    void stairUp(Snowman *snowman, int size)
+    {
+        snowman->position.y += size;
+        snowman->position.x += (direction == DIRECTION::RIGHT) ? size : -size;
     }
 
     void drawStairHandRail(void)

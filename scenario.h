@@ -15,9 +15,9 @@ class Scenario
     {
         floorHeight = 55;
 
-        stairs.push_back(Stair(0, 50));
-        stairs.push_back(Stair(1, 50));
-        stairs.push_back(Stair(2, -50));
+        stairs.push_back(Stair(0, 150, DIRECTION::RIGHT));
+        stairs.push_back(Stair(1, 150, DIRECTION::RIGHT));
+        stairs.push_back(Stair(2, -150, DIRECTION::LEFT));
     }
 
     void draw(void)
@@ -26,10 +26,17 @@ class Scenario
         drawPlatform(0);
         drawPlatform(1);
         drawPlatform(2);
+        drawPlatform(3);
 
-        drawTable(0, 0);
-        drawTable(1, 0);
+        drawTable(0, -50);
+        drawTable(0, 50);
+        drawTable(0, 190);
+        drawTable(1, -100);
+        drawTable(1, -20);
+        drawTable(1, 80);
         drawTable(2, 0);
+        drawTable(2, 100);
+        drawTable(2, -100);
 
         for(unsigned int i=0; i < stairs.size(); i++)
         {
@@ -103,8 +110,8 @@ class Scenario
         glBegin(GL_POLYGON);
         glColor3f(0.0, 0.8, 0.00);
         glVertex3f(-300, 0, -20);
-        glVertex3f(-300, 130, -20);
-        glVertex3f(300, 130, -20);
+        glVertex3f(-300, 230, -20);
+        glVertex3f(300, 230, -20);
         glVertex3f(300, 0, -20);
         glEnd();
     }

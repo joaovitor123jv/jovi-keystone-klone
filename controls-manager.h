@@ -20,7 +20,7 @@ class ControlsManager
         rotationSensibility = 5.0;
         translationSensibility = 10.0;
         observerSensibility = 10.0;
-
+        movementActionsPressed = 0;
         observer = NULL;
     }
 
@@ -139,11 +139,13 @@ class ControlsManager
         case GLUT_KEY_LEFT:
             snowman->turnLeft();
             snowman->walk();
+            this->movementActionsPressed += 1;
             break;
 
         case GLUT_KEY_RIGHT:
             snowman->turnRight();
             snowman->walk();
+            this->movementActionsPressed += 1;
             break;
 
         case GLUT_KEY_F3:
@@ -161,11 +163,19 @@ class ControlsManager
         switch (keyCode)
         {
         case GLUT_KEY_LEFT:
-            snowman->stop();
+            this->movementActionsPressed -= 1;
+            if(this->movementActionsPressed == 0)
+            {
+                snowman->stop();
+            }
             break;
 
         case GLUT_KEY_RIGHT:
-            snowman->stop();
+            this->movementActionsPressed -= 1;
+            if(this->movementActionsPressed == 0)
+            {
+                snowman->stop();
+            }
             break;
         }
     }
@@ -187,6 +197,7 @@ class ControlsManager
 
     private:
     int button;
+    short int movementActionsPressed;
     float rotationSensibility;
     float translationSensibility;
     float observerSensibility;
