@@ -74,6 +74,9 @@ class ControlsManager
             snowman->requestingAction = true;
             break;
 
+        case 'c':
+            focusPlayer = !focusPlayer;
+            break;
         }
     }
 

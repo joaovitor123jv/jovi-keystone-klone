@@ -43,7 +43,14 @@ class Observer
 
     void follow(Snowman *snowman)
     {
-        this->position.x = -snowman->position.x;
+        if(focusPlayer)
+        {
+            this->position.z = snowman->position.x - 20;
+        }
+        else
+        {
+            this->position.x = -snowman->position.x;
+        }
     }
 
     private:

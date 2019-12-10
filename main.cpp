@@ -116,14 +116,37 @@ void EspecificaParametrosVisualizacao(void)
 
     // Especifica a projeção perspectiva
     // (angulo, aspecto, zMin, zMax)
-    gluPerspective(camera.angle, camera.aspect, 0.5, 1000);
+    if(focusPlayer)
+    {
+        gluPerspective(90, camera.aspect, 0.5, 1000);
+    }
+    else
+    {
+        gluPerspective(camera.angle, camera.aspect, 0.5, 1000);
+    }
 
     setIlumination();
 
-    // Posiciona e orienta o observador
-    glTranslatef(observer.position.x, -observer.position.y, -observer.position.z);
-    glRotatef(observer.rotation.x, 1, 0, 0);
-    glRotatef(observer.rotation.y, 0, 1, 0);
+    if(focusPlayer)
+    {
+        if(snowman.rotation == 90)
+        {
+            glTranslatef(0, -(snowman.position.y + 40), (snowman.position.x - 10));
+        }
+        else
+        {
+            glTranslatef(0, -(snowman.position.y + 40), -(snowman.position.x + 10));
+        }
+        // glRotatef(, 1, 0, 0);
+        glRotatef(-snowman.rotation, 0, 1, 0);
+    }
+    else
+    {
+        // Posiciona e orienta o observador
+        glTranslatef(observer.position.x, -observer.position.y, -observer.position.z);
+        glRotatef(observer.rotation.x, 1, 0, 0);
+        glRotatef(observer.rotation.y, 0, 1, 0);
+    }
 
     glMatrixMode(GL_MODELVIEW); // Especifica sistema de coordenadas do modelo
     glLoadIdentity(); // Inicializa sistema de coordenadas do modelo
@@ -260,6 +283,8 @@ void setup(void)
 
     // Habilita o modelo de colorização de Gouraud
     glShadeModel(GL_SMOOTH);
+
+    focusPlayer = false;
 
     controlManager.setObserver(&observer);
     controlManager.setCamera(&camera);

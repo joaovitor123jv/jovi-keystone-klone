@@ -15,4 +15,6 @@ namespace DIRECTION
     enum { LEFT, RIGHT };
 }
 
+static bool focusPlayer;
+
 #endif // GENERAL_STRUCTURES
