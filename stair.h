@@ -71,7 +71,6 @@ class Stair
             {
                 if (isPlayerHere(snowman))
                 {
-                    // if(snowman->isOnStair(this->id)) return;
                     snowman->disableMovements(this->id);
                     this->isCarryingSomething = true;
                     snowman->requestingAction = false;
