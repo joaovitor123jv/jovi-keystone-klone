@@ -13,9 +13,12 @@ class Snowman
     public:
     float ySpeed;
     float gravity;
+    int floorNumber;
 
     bool jumping;
     bool rotationEnabled;
+    bool canMove;
+    bool requestingAction;
 
     Position position;
     Position initialPosition;
@@ -34,6 +37,10 @@ class Snowman
         this->rotationEnabled = false;
         this->ySpeed = 0.0;
         this->gravity = 0.98;
+        this->floorNumber = 0;
+        this->canMove = true;
+        this->stairId = -1;
+        this->requestingAction = false;
     }
 
     // Print the snowman
@@ -79,7 +86,10 @@ class Snowman
 
     void walk()
     {
-        walking = true;
+        if(canMove)
+        {
+            walking = true;
+        }
     }
 
     void stop()
@@ -101,7 +111,7 @@ class Snowman
 
     void jump()
     {
-        if(!this->jumping)
+        if(!this->jumping && this->canMove)
         {
             // printf("Starting JUMP!\n");
             this->jumping = true;
@@ -112,23 +122,64 @@ class Snowman
 
     void jumpAnimation()
     {
-        // printf("On JUMP ANIMATION\n");
         if((this->position.y + this->ySpeed) < this->initialPosition.y)
         {
-            // printf("On IS NOT JUMPING\n");
             this->ySpeed = 0;
             this->position.y = this->initialPosition.y;
             this->jumping = false;
         }
         else
         {
-            // printf("On IS JUMPING\n");
             this->position.y += (int)this->ySpeed;
             this->ySpeed -= this->gravity;
         }
     }
 
+    void setFloorNumber(int floorNumber, int floorHeight)
+    {
+        this->position.y = floorNumber * floorHeight;
+        this->floorNumber = floorNumber;
+        this->createBackupPosition();
+    }
+
+    int getFloorNumber()
+    {
+        return this->floorNumber;
+    }
+
+    void disableMovements(int stairId)
+    {
+        if(this->stairId < 0)
+        {
+            this->canMove = false;
+            this->stairId = stairId;
+        }
+    }
+
+    void enableMovements(int stairId)
+    {
+        if(this->stairId == stairId) 
+        {
+            this->canMove = true;
+            this->stairId = -1;
+        }
+    }
+
+    bool isOnStair(int stairId)
+    {
+        return (this->stairId == stairId);
+    }
+
+    void stairUp(int size)
+    {
+        this->position.x += size;
+        this->position.y += size;
+        // this->initialPosition.x += size;
+        // this->initialPosition.y += size;
+    }
+
     private:
+    int stairId;
     bool walking;
 
     void createBackupPosition()

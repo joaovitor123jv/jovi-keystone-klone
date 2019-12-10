@@ -70,6 +70,10 @@ class ControlsManager
             exit(0);
             break;
 
+        case ' ':
+            snowman->requestingAction = true;
+            break;
+
         // case 'a':
         //     camera->position.x++;
         //     break;
@@ -96,7 +100,15 @@ class ControlsManager
         }
     }
 
-    void onKeyUpEvent(unsigned char key, int x, int y) {}
+    void onKeyUpEvent(unsigned char key, int x, int y)
+    {
+        switch (key)
+        {
+        case ' ':
+            snowman->requestingAction = false;
+            break;
+        }
+    }
 
     void onSpecialKeyDownEvent(int keyCode, int x, int y)
     {

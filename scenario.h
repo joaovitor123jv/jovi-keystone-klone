@@ -4,6 +4,7 @@
 #include <GL/freeglut.h>
 #include <vector>
 #include "stair.h"
+#include "snowman.h"
 
 class Scenario
 {
@@ -14,7 +15,7 @@ class Scenario
     {
         floorHeight = 55;
 
-        stairs.push_back(Stair(0, 0));
+        stairs.push_back(Stair(0, 50));
         stairs.push_back(Stair(1, 50));
         stairs.push_back(Stair(2, -50));
     }
@@ -36,11 +37,19 @@ class Scenario
         }
     }
 
-    void animate(void)
+    void animate(Snowman *snowman)
     {
         for(unsigned int i=0; i < stairs.size(); i++)
         {
-            stairs.at(i).animate();
+            stairs.at(i).animate(snowman);
+        }
+    }
+
+    void interact(Snowman *snowman)
+    {
+        for(unsigned int i=0; i < stairs.size(); i++)
+        {
+            stairs.at(i).interact(snowman);
         }
     }
 
