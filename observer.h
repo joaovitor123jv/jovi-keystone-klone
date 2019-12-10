@@ -3,6 +3,7 @@
 
 #include <GL/freeglut.h>
 #include "general-structures.h"
+#include "snowman.h"
 
 class Observer
 {
@@ -38,6 +39,11 @@ class Observer
         this->initialPosition.x = this->position.x;
         this->initialPosition.y = this->position.y;
         this->initialPosition.z = this->position.z;
+    }
+
+    void follow(Snowman *snowman)
+    {
+        this->position.x = -snowman->position.x;
     }
 
     private:

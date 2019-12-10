@@ -3,6 +3,7 @@
 
 #include <GL/freeglut.h>
 #include "general-structures.h"
+#include "snowman.h"
 
 namespace CAMERA
 {
@@ -65,6 +66,11 @@ class Camera
     void updateAspect(GLfloat width, GLfloat height)
     {
         this->aspect = width / height;
+    }
+
+    void follow(Snowman *snowman)
+    {
+        this->position.x = -snowman->position.x;
     }
 };
 

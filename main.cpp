@@ -57,6 +57,7 @@ void displayCallback(void)
     snowman.draw();
     // sun.draw();
     scenario.draw();
+    // observer.follow(&snowman);
 
     glutSwapBuffers(); // Executa os comandos OpenGL
 }
@@ -140,8 +141,12 @@ void Anima(int value)
     sun.animate();
     snowman.animate();
 
+    observer.follow(&snowman);
+    EspecificaParametrosVisualizacao();
+
     glutPostRedisplay();
     glutTimerFunc(34, Anima, 1);
+    // glutTimerFunc(90, Anima, 1);
 }
 
 // Função callback chamada quando o tamanho da janela é alterado
@@ -191,8 +196,8 @@ int main(int argc, char **argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH); // Define do modo de operação da GLUT
-    glutInitWindowPosition(100, 50); // Especifica a posição inicial da janela GLUT
-    glutInitWindowSize(800, 600); // Especifica o tamanho inicial em pixels da janela GLUT
+    glutInitWindowPosition(10, 10); // Especifica a posição inicial da janela GLUT
+    glutInitWindowSize(1300, 700); // Especifica o tamanho inicial em pixels da janela GLUT
     glutCreateWindow("Jovi - Keystone Kapers");
     setup(); // Chama a função responsável por fazer as inicializações
     glutTimerFunc(60, Anima, 1);

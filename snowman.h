@@ -103,7 +103,7 @@ class Snowman
     {
         if(!this->jumping)
         {
-            printf("Starting JUMP!\n");
+            // printf("Starting JUMP!\n");
             this->jumping = true;
             this->createBackupPosition();
             this->ySpeed = SNOWMAN_JUMP_FORCE;
@@ -112,17 +112,17 @@ class Snowman
 
     void jumpAnimation()
     {
-        printf("On JUMP ANIMATION\n");
+        // printf("On JUMP ANIMATION\n");
         if((this->position.y + this->ySpeed) < this->initialPosition.y)
         {
-            printf("On IS NOT JUMPING\n");
+            // printf("On IS NOT JUMPING\n");
             this->ySpeed = 0;
             this->position.y = this->initialPosition.y;
             this->jumping = false;
         }
         else
         {
-            printf("On IS JUMPING\n");
+            // printf("On IS JUMPING\n");
             this->position.y += (int)this->ySpeed;
             this->ySpeed -= this->gravity;
         }
@@ -140,41 +140,62 @@ class Snowman
 
     void snowman(void)
     {
-        //cabeça
         glPushMatrix();
-            glColor3f(1.0, 1.0, 1.0);
-            glutSolidSphere(5, 20, 10);
+            glColor3f(0.8, 0.62, 0.4);
+            glTranslatef(0, -2, 0);
+            glutSolidCube(8);
+        glPopMatrix();
+        //cabeça
+
+        glPushMatrix();
+            glTranslatef(0, -4, 5);
+            glutSolidCube(3);
         glPopMatrix();
 
-        //pescoço
         glPushMatrix();
-            glColor3f(1.0, 1.0, 1.0);
-            glTranslatef(0.0, -6, 0.0);
-            glRotatef(90, 1, 0, 0);
-            glutSolidTorus(3, 4, 20, 20);
+            glColor3f(0.1, 0.1, 0.1);
+            glTranslatef(0, 4, 0);
+            glScalef(1, 0.6, 1.1);
+            glutSolidCube(9);
         glPopMatrix();
+
+        // glPushMatrix();
+        //     glColor3f(1.0, 1.0, 1.0);
+        //     glutSolidSphere(5, 20, 10);
+        // glPopMatrix();
+
+        // //pescoço
+        // glPushMatrix();
+        //     glColor3f(1.0, 1.0, 1.0);
+        //     glTranslatef(0.0, -6, 0.0);
+        //     glRotatef(90, 1, 0, 0);
+        //     glutSolidTorus(3, 4, 20, 20);
+        // glPopMatrix();
 
         //corpo
         glPushMatrix();
-            glColor3f(1.0, 1.0, 1.0);
-            glTranslatef(0.0, -16, 0.0);
-            glScalef(1, 1.2, 1.0);
+            glColor3f(0.2, 0.2, 1.0);
+            glTranslatef(0.0, -14, 0.0);
+            glScalef(0.6, 1.2, 0.5);
             glutSolidSphere(10, 20, 10);
         glPopMatrix();
 
+        glColor3f(1.0, 1.0, 1.0);
         //braço esquerdo
         glPushMatrix();
             glColor3f(1.0, 1.0, 1.0);
-            glTranslatef(-10, -10, 0.0);
-            glScalef(2, 1, 1);
+            glTranslatef(-8, -11, 0.0);
+            glRotatef(45, 0, 0, 1);
+            glScalef(2.5, 1, 1);
             glutSolidSphere(2, 20, 10);
         glPopMatrix();
 
         // Braço direito
         glPushMatrix();
             glColor3f(1.0, 1.0, 1.0);
-            glTranslatef(10, -10, 0.0);
-            glScalef(2, 1, 1);
+            glTranslatef(8, -11, 0.0);
+            glRotatef(-45, 0, 0, 1);
+            glScalef(2.5, 1, 1);
             glutSolidSphere(2, 20, 10);
         glPopMatrix();
 
@@ -197,17 +218,36 @@ class Snowman
         //olho esquerdo
         glPushMatrix();
             glColor3f(0.0, 0.0, 0.0);
-            glTranslatef(-1.2, 0.8, 5.2);
+            glTranslatef(-1.2, -1, 4.5);
             glutSolidSphere(0.5, 20, 10);
         glPopMatrix();
 
         //olho direito
         glPushMatrix();
             glColor3f(0.0, 0.0, 0.0);
-            glTranslatef(1.2, 0.8, 5.2);
+            glTranslatef(1.2, -1, 4.5);
             glutSolidSphere(0.5, 20, 10);
         glPopMatrix();
     }
 };
+
+// Animação vitória!
+        // //braço esquerdo
+        // glPushMatrix();
+        //     glColor3f(1.0, 1.0, 1.0);
+        //     glTranslatef(-10, -10, 0.0);
+        //     glRotatef(-45, 0, 0, 1);
+        //     glScalef(2.5, 1, 1);
+        //     glutSolidSphere(2, 20, 10);
+        // glPopMatrix();
+
+        // // Braço direito
+        // glPushMatrix();
+        //     glColor3f(1.0, 1.0, 1.0);
+        //     glTranslatef(10, -10, 0.0);
+        //     glRotatef(45, 0, 0, 1);
+        //     glScalef(2.5, 1, 1);
+        //     glutSolidSphere(2, 20, 10);
+        // glPopMatrix();
 
 #endif // SNOWMAN
