@@ -9,6 +9,8 @@
 #include "observer.h"
 #include "controls-manager.h"
 #include "scenario.h"
+#include "ball.h"
+#include "car.h"
 
 Camera camera;
 Observer observer;
@@ -16,6 +18,23 @@ Snowman snowman;
 Sun sun;
 ControlsManager controlManager;
 Scenario scenario;
+
+std::vector<Ball> balls;
+
+
+void generateBalls()
+{
+    bool shouldCreateObject = (rand() % 100 > 97) ? true : false;
+    if(shouldCreateObject)
+    {
+        int floorNumber = rand() % 3;
+        int direction = rand() % 2;
+
+        balls.push_back(Ball(floorNumber, (direction == 0) ? DIRECTION::LEFT : DIRECTION::RIGHT, 1));
+        printf("Generated BALL\n");
+    }
+}
+
 
 // Função responsável pela especificação dos parâmetros de iluminação
 void setIlumination(void)
@@ -58,6 +77,26 @@ void displayCallback(void)
     // sun.draw();
     scenario.draw();
     // observer.follow(&snowman);
+
+    if (balls.size() > 0)
+    {
+        for (unsigned int i = 0; i < balls.size(); i++)
+        {
+            balls.at(i).draw();
+        }
+    }
+
+    glPushMatrix();
+    glColor3f(1, 0, 0);
+    glTranslatef(0, 30, 0);
+    glutSolidCube(10);
+    glPopMatrix();
+
+    glPushMatrix();
+    glColor3f(1, 0, 0);
+    glTranslatef(0, 0, 0);
+    glutSolidCube(10);
+    glPopMatrix();
 
     glutSwapBuffers(); // Executa os comandos OpenGL
 }
@@ -142,6 +181,20 @@ void Anima(int value)
     snowman.animate();
     scenario.interact(&snowman);
     scenario.animate(&snowman);
+
+    generateBalls();
+    if(balls.size() > 0)
+    {
+        for (unsigned int i = 0; i < balls.size(); i++)
+        {
+            balls.at(i).animate();
+            if(balls.at(i).hasCollided(&snowman))
+            {
+                printf("COLISÃO DETECTADA");
+                Sleep(1000);
+            }
+        }
+    }
 
     observer.follow(&snowman);
     EspecificaParametrosVisualizacao();

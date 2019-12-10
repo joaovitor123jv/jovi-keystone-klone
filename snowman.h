@@ -38,15 +38,16 @@ public:
         this->initialPosition.z = 0;
         this->rotationEnabled = false;
         this->ySpeed = 0.0;
-        this->gravity = 0.98;
+        this->gravity = 0.74;
+        // this->gravity = 0.98;
         this->floorNumber = 0;
         this->canMove = true;
         this->stairId = -1;
         this->requestingAction = false;
 
         // For collisions
-        this->width = 20;
-        this->height = 70;
+        this->width = 10;
+        this->height = 30;
     }
 
     // Print the snowman
