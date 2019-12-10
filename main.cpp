@@ -140,6 +140,7 @@ void Anima(int value)
 {
     sun.animate();
     snowman.animate();
+    scenario.animate();
 
     observer.follow(&snowman);
     EspecificaParametrosVisualizacao();

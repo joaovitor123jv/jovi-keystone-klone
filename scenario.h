@@ -1,14 +1,22 @@
 #ifndef SCENARIO
 #define SCENARIO
 
-#include<GL/freeglut.h>
+#include <GL/freeglut.h>
+#include <vector>
+#include "stair.h"
 
 class Scenario
 {
     public:
+    std::vector<Stair> stairs;
+
     Scenario() 
     {
         floorHeight = 55;
+
+        stairs.push_back(Stair(0, 0));
+        stairs.push_back(Stair(1, 50));
+        stairs.push_back(Stair(2, -50));
     }
 
     void draw(void)
@@ -21,6 +29,19 @@ class Scenario
         drawTable(0, 0);
         drawTable(1, 0);
         drawTable(2, 0);
+
+        for(unsigned int i=0; i < stairs.size(); i++)
+        {
+            stairs.at(i).draw();
+        }
+    }
+
+    void animate(void)
+    {
+        for(unsigned int i=0; i < stairs.size(); i++)
+        {
+            stairs.at(i).animate();
+        }
     }
 
     private:
