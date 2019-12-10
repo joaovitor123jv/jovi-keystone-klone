@@ -74,29 +74,6 @@ class ControlsManager
             snowman->requestingAction = true;
             break;
 
-        // case 'a':
-        //     camera->position.x++;
-        //     break;
-
-        // case 'z':
-        //     camera->position.y--;
-        //     break;
-
-        // case 's':
-        //     camera->position.y++;
-        //     break;
-
-        // case 'x':
-        //     camera->position.y--;
-        //     break;
-
-        // case 'd':
-        //     camera->position.z++;
-        //     break;
-
-        // case 'c':
-        //     camera->position.z--;
-        //     break;
         }
     }
 

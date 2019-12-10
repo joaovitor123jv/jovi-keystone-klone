@@ -4,7 +4,6 @@
 
 #include "camera.h"
 #include "snowman.h"
-#include "sun.h"
 #include "scenario.h"
 #include "observer.h"
 #include "controls-manager.h"
@@ -15,7 +14,6 @@
 Camera camera;
 Observer observer;
 Snowman snowman;
-Sun sun;
 ControlsManager controlManager;
 Scenario scenario;
 
@@ -185,7 +183,6 @@ void motionCallback(int x, int y)
 // Função callback chamada pela GLUT a cada intervalo de tempo
 void Anima(int value)
 {
-    sun.animate();
     snowman.animate();
     scenario.interact(&snowman);
     scenario.animate(&snowman);
