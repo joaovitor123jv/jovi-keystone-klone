@@ -15,9 +15,9 @@ class Scenario
     {
         floorHeight = 55;
 
-        stairs.push_back(Stair(0, 150, DIRECTION::RIGHT));
-        stairs.push_back(Stair(1, 150, DIRECTION::RIGHT));
-        stairs.push_back(Stair(2, -150, DIRECTION::LEFT));
+        stairs.push_back(Stair(0, 350, DIRECTION::RIGHT));
+        stairs.push_back(Stair(1, -350, DIRECTION::LEFT));
+        stairs.push_back(Stair(2, 350, DIRECTION::RIGHT));
     }
 
     void draw(void)
@@ -27,13 +27,16 @@ class Scenario
         drawPlatform(1);
         drawPlatform(2);
         drawPlatform(3);
+        
+        drawLeftWall();
+        drawRightWall();
 
         drawTable(0, -50);
         drawTable(0, 50);
-        drawTable(0, 190);
+        drawTable(0, 290);
         drawTable(1, -100);
         drawTable(1, -20);
-        drawTable(1, 80);
+        drawTable(1, 280);
         drawTable(2, 0);
         drawTable(2, 100);
         drawTable(2, -100);
@@ -63,6 +66,28 @@ class Scenario
     private:
     int floorHeight;
 
+    void drawLeftWall()
+    {
+        glColor3f(0.0, 0.7, 0.00);
+        glBegin(GL_POLYGON);
+        glVertex3f(-450, 0, -20);
+        glVertex3f(-450, 0, 20);
+        glVertex3f(-450, 230, 20);
+        glVertex3f(-450, 230, -20);
+        glEnd();
+    }
+
+    void drawRightWall()
+    {
+        glColor3f(0.0, 0.7, 0.00);
+        glBegin(GL_POLYGON);
+        glVertex3f(450, 0, -20);
+        glVertex3f(450, 0, 20);
+        glVertex3f(450, 230, 20);
+        glVertex3f(450, 230, -20);
+        glEnd();
+    }
+
     void drawPlatform(int floorNumber)
     {
         glPushMatrix();
@@ -70,35 +95,35 @@ class Scenario
             // Chão
             glBegin(GL_POLYGON);
             glColor3f(0.81, 0.85, 0.06);
-            glVertex3f(-300, 0, -20);
-            glVertex3f(-300, 0, 20);
-            glVertex3f(300, 0, 20);
-            glVertex3f(300, 0, -20);
+            glVertex3f(-450, 0, -20);
+            glVertex3f(-450, 0, 20);
+            glVertex3f(450, 0, 20);
+            glVertex3f(450, 0, -20);
             glEnd();
 
             // Teto da plataforma de baixo
             glBegin(GL_POLYGON);
             glColor3f(0.0, 1.0, 0.0);
-            glVertex3f(-300, -5, -20);
-            glVertex3f(-300, -5, 20);
-            glVertex3f(300, -5, 20);
-            glVertex3f(300, -5, -20);
+            glVertex3f(-450, -5, -20);
+            glVertex3f(-450, -5, 20);
+            glVertex3f(450, -5, 20);
+            glVertex3f(450, -5, -20);
             glEnd();
 
             glColor3f(0.68, 0.72, 0.05);
             // Lateral da frente
             glBegin(GL_POLYGON);
-                glVertex3f( -300, 0, -20);
-                glVertex3f( -300, -5, -20);
-                glVertex3f( 300, -5, -20);
-                glVertex3f( 300, 0, -20);
+                glVertex3f( -450, 0, -20);
+                glVertex3f( -450, -5, -20);
+                glVertex3f( 450, -5, -20);
+                glVertex3f( 450, 0, -20);
             glEnd();
             // Lateral do fundo
             glBegin(GL_POLYGON);
-                glVertex3f( -300, 0, 20);
-                glVertex3f( -300, -5, 20);
-                glVertex3f( 300, -5, 20);
-                glVertex3f( 300, 0, 20);
+                glVertex3f( -450, 0, 20);
+                glVertex3f( -450, -5, 20);
+                glVertex3f( 450, -5, 20);
+                glVertex3f( 450, 0, 20);
             glEnd();
         // glutSolidCube(300);
         glPopMatrix();
@@ -109,10 +134,10 @@ class Scenario
         // Parede
         glBegin(GL_POLYGON);
         glColor3f(0.0, 0.8, 0.00);
-        glVertex3f(-300, 0, -20);
-        glVertex3f(-300, 230, -20);
-        glVertex3f(300, 230, -20);
-        glVertex3f(300, 0, -20);
+        glVertex3f(-450, 0, -20);
+        glVertex3f(-450, 230, -20);
+        glVertex3f(450, 230, -20);
+        glVertex3f(450, 0, -20);
         glEnd();
     }
 

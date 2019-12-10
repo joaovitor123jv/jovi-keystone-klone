@@ -46,7 +46,7 @@ public:
         this->requestingAction = false;
 
         // For collisions
-        this->width = 10;
+        this->width = 8;
         this->height = 30;
     }
 

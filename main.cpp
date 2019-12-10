@@ -20,18 +20,32 @@ ControlsManager controlManager;
 Scenario scenario;
 
 std::vector<Ball> balls;
+std::vector<Car> cars;
 
 
 void generateBalls()
 {
-    bool shouldCreateObject = (rand() % 100 > 97) ? true : false;
+    bool shouldCreateObject = (rand() % 100 > 98) ? true : false;
     if(shouldCreateObject)
     {
-        int floorNumber = rand() % 3;
+        int floorNumber = rand() % 4;
         int direction = rand() % 2;
 
         balls.push_back(Ball(floorNumber, (direction == 0) ? DIRECTION::LEFT : DIRECTION::RIGHT, 1));
-        printf("Generated BALL\n");
+        printf("Generated BALL on FLOOR NUMBER %d\n", floorNumber);
+    }
+}
+
+void generateCars()
+{
+    bool shouldCreateObject = (rand() % 100 > 98) ? true : false;
+    if(shouldCreateObject)
+    {
+        int floorNumber = rand() % 4;
+        int direction = rand() % 2;
+
+        cars.push_back(Car(floorNumber, (direction == 0) ? DIRECTION::LEFT : DIRECTION::RIGHT, 2));
+        printf("Generated CAR on FLOOR NUMBER %d\n", floorNumber);
     }
 }
 
@@ -74,9 +88,7 @@ void displayCallback(void)
     setIlumination();
 
     snowman.draw();
-    // sun.draw();
     scenario.draw();
-    // observer.follow(&snowman);
 
     if (balls.size() > 0)
     {
@@ -86,17 +98,13 @@ void displayCallback(void)
         }
     }
 
-    glPushMatrix();
-    glColor3f(1, 0, 0);
-    glTranslatef(0, 30, 0);
-    glutSolidCube(10);
-    glPopMatrix();
-
-    glPushMatrix();
-    glColor3f(1, 0, 0);
-    glTranslatef(0, 0, 0);
-    glutSolidCube(10);
-    glPopMatrix();
+    if (cars.size() > 0)
+    {
+        for (unsigned int i = 0; i < cars.size(); i++)
+        {
+            cars.at(i).draw();
+        }
+    }
 
     glutSwapBuffers(); // Executa os comandos OpenGL
 }
@@ -196,6 +204,19 @@ void Anima(int value)
         }
     }
 
+    generateCars();
+    if(cars.size() > 0)
+    {
+        for (unsigned int i = 0; i < cars.size(); i++)
+        {
+            cars.at(i).animate();
+            if(cars.at(i).hasCollided(&snowman))
+            {
+                Sleep(1000);
+            }
+        }
+    }
+
     observer.follow(&snowman);
     EspecificaParametrosVisualizacao();
 
@@ -233,7 +254,7 @@ void setup(void)
 
     /* --------------- OpenGL rendering Options --------------------- */
     // Define a cor de fundo da janela de visualização como branca
-    glClearColor(0.4f, 0.0f, 1.0f, 1.0f);
+    glClearColor(0.6f, 0.6f, 1.0f, 1.0f);
 
     glEnable(GL_COLOR_MATERIAL); // Habilita a definição da cor do material a partir da cor corrente
     glEnable(GL_LIGHTING); //Habilita o uso de iluminação

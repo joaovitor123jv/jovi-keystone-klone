@@ -11,10 +11,11 @@ class Car : public Obstacle
     Car()
     {
         this->speedX = 15;
-        this->position.x = -300;
+        this->position.x = -500;
         this->position.y = 15;
         this->position.z = 0;
         this->yVariation = 0;
+        this->floorNumber = 0;
         this->speedY = 0;
         this->height = 10;
         this->width = 10;
@@ -22,14 +23,15 @@ class Car : public Obstacle
 
     Car(int floorNumber, int direction, int speed)
     {
-        this->speedX = speed;
-        this->position.x = (direction == DIRECTION::RIGHT) ? -300 : 300;
-        this->position.y = floorNumber * 55 + 15;
+        this->speedX = (direction == DIRECTION::RIGHT) ? speed : -speed;
+        this->position.x = (direction == DIRECTION::RIGHT) ? -500 : 500;
+        this->position.y = floorNumber * 55 + 10;
         this->position.z = 0;
         this->yVariation = 0;
         this->speedY = 0;
         this->height = 10;
         this->width = 10;
+        this->floorNumber = floorNumber;
     }
 
     void draw(void)
