@@ -1,4 +1,13 @@
-#include <GL/freeglut.h>
+#ifdef __linux__ 
+    //linux code goes here
+    #include <freeglut.h>
+#elif _WIN32
+    // windows code goes here
+    #include <GL/freeglut.h>
+#endif
+
+
+
 #include <stdio.h>
 #include <stdlib.h>
 
